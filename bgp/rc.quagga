@@ -1,0 +1,93 @@
+#!/bin/sh
+
+BASE=/etc/router
+
+ZEBRA=1
+
+OSPF=0
+RIP=0
+
+OSPFV6=0
+RIPNG=0
+
+BGP=1
+
+_abort(){
+    echo $@
+    exit 1
+}
+
+_service(){
+    sname="$1"
+    act="$2"
+
+    echo -n "[quagga] $act $sname "
+
+    cmd="$sname"
+    pid="/var/run/$sname.pid"
+    cfg="$BASE/$sname.conf"
+    port=2601
+    if [ "$sname" = "zebra" ]; then port=2601; fi
+    if [ "$sname" = "bgpd" ]; then port=2602; fi
+    if [ "$sname" = "ospfd" ]; then port=2603; fi
+    if [ "$sname" = "ospf6d" ]; then port=2604; fi
+    if [ "$sname" = "ripngd" ]; then port=2605; fi
+
+    # matar
+    for i in 1 2 3; do killall "$sname"; done 2>/dev/null
+
+    # arquivo de config nao existe
+    if [ ! -f "$cfg" ]; then _abort "Erro 404 - config $cfg nao existe"; fi
+
+    # iniciar se necessario
+    if [ "$act" = "start" -o "$act" = "restart" ]; then
+	runcmd="$cmd -A 127.0.0.1 --daemon -f $cfg -i $pid -P $port -u root -g root"
+	$runcmd || _abort "Erro $? ao iniciar $sname: $runcmd"
+    fi
+    echo "OK"
+}
+
+quagga_start() {
+    if [ "$ZEBRA" = "1" ]; then _service zebra start; else return 0; fi
+    sleep 2
+    if [ "$BGP" = "1" ]; then _service bgpd start; fi
+    if [ "$OSPF" = "1" ]; then _service ospfd start; fi
+    if [ "$OSPFV6" = "1" ]; then _service ospf6d start; fi
+    if [ "$RIPNG" = "1" ]; then _service ripngd start; fi
+}
+
+quagga_stop() {
+  for i in 1 2 3; do
+    killall zebra ospfd bgpd ospf6d 2>/dev/null
+    killall zebra 2>/dev/null
+    killall ospfd 2>/dev/null
+    killall bgpd 2>/dev/null
+    killall ospf6d 2>/dev/null
+  done
+}
+
+
+quagga_restart() {
+  quagga_stop
+  sleep 2
+  quagga_start
+}
+
+case "$1" in
+'start')
+  quagga_start
+  ;;
+'stop')
+  quagga_stop
+  ;;
+'restart')
+  quagga_restart
+  ;;
+'service')
+  _service $2 $3
+  ;;
+*)
+  # Default is "start", for backwards compatibility with previous
+  # Slackware versions.  This may change to a 'usage' error someday.
+  quagga_start
+esac
