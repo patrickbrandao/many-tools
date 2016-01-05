@@ -32,57 +32,57 @@ _have_space 1024
 		echo "TMSoft Solucoes - www.tmsoft.com.br - Excelencia em redes e telecomunicacoes."
 	done
 	echo
-) > 1k.zip
+) > k1.zip
 
 # Gerar arquivo de 1 m
 _have_space 1024000
 for i in $(seq 1 1 1024); do
-	cat 1k.zip
-done > 1M.zip
+	cat k1.zip
+done > M1.zip
 
 # Gerar arquivo de 5 m
 _have_space 5024000
 for i in $(seq 1 1 5); do
-	cat 1M.zip
-done > 5M.zip
+	cat M1.zip
+done > M5.zip
 
 # Gerar arquivo de 10m
 _have_space 11024000
-(cat 5M.zip; cat 5M.zip) > 10M.zip
+(cat M5.zip M5.zip) > M10.zip
 
 # Gerar arquivo de 25m
 _have_space 25024000
-(cat 10M.zip; cat 10M.zip; cat 5M.zip) > 25M.zip
+(cat M10.zip M10.zip M5.zip) > M25.zip
 
 # Gerar arquivo de 50m
 _have_space 51024000
-for i in $(seq 1 1 5); do
-	cat 10M.zip
-done > 50M.zip
+for i in $(seq 1 1 2); do
+	cat M25.zip
+done > M50.zip
 
 # Gerar arquivo de 100m
 _have_space 111024000
-for i in $(seq 1 1 10); do
-	cat 10M.zip
-done > 100M.zip
+(cat M50.zip M50.zip) > 100M.zip
 
 # Gerar arquivo de 250m
 _have_space 250024000
-(cat 100M.zip; cat 100M.zip; cat 50M.zip) > 250M.zip
+(cat M100.zip M100.zip M50.zip) > M250.zip
 
 # Gerar arquivo de 500m
 _have_space 555024000
-for i in $(seq 1 1 5); do
-	cat 100M.zip
-done > 500M.zip
+(cat M250.zip M250.zip) > M500.zip
 
 # Gerar arquivo de 1 gigabyte
 _have_space 1000222000
-(cat 500M.zip; cat 500M.zip) > G1.zip
+(cat M500.zip M500.zip) > G1.zip
+
+# Gerar arquivo de 1.5 gigabytes
+_have_space 1500222000
+(cat G1.zip M500.zip) > G1_5.zip
 
 # Gerar arquivo de 1 gigabyte
 _have_space 2111333000
-(cat G1.zip; cat G1.zip) > G2.zip
+(cat G1.zip G1.zip) > G2.zip
 
 
 
