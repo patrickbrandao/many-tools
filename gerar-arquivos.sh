@@ -50,11 +50,25 @@ done > 5M.zip
 _have_space 11024000
 (cat 5M.zip; cat 5M.zip) > 10M.zip
 
+# Gerar arquivo de 25m
+_have_space 25024000
+(cat 10M.zip; cat 10M.zip; cat 5M.zip) > 25M.zip
+
+# Gerar arquivo de 50m
+_have_space 51024000
+for i in $(seq 1 1 5); do
+	cat 10M.zip
+done > 50M.zip
+
 # Gerar arquivo de 100m
 _have_space 111024000
 for i in $(seq 1 1 10); do
 	cat 10M.zip
 done > 100M.zip
+
+# Gerar arquivo de 250m
+_have_space 250024000
+(cat 100M.zip; cat 100M.zip; cat 50M.zip) > 250M.zip
 
 # Gerar arquivo de 500m
 _have_space 555024000
@@ -68,5 +82,20 @@ _have_space 1000222000
 
 # Gerar arquivo de 1 gigabyte
 _have_space 2111333000
-(cat G1.zip; cat G1.zip) > G1.zip
+(cat G1.zip; cat G1.zip) > G2.zip
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
